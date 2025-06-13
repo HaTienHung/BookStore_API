@@ -13,6 +13,7 @@ class AuthorController extends Controller
     public function index()
     {
         //
+        
     }
 
     /**
@@ -44,7 +45,7 @@ class AuthorController extends Controller
      */
     public function edit(Author $author)
     {
-        //
+        // 
     }
 
     /**

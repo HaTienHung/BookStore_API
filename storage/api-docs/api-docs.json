@@ -1,0 +1,718 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Book Store API",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/documentation": {},
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Tài khoản"
+                ],
+                "summary": "Đăng nhập User",
+                "operationId": "users/login/user",
+                "parameters": [
+                    {
+                        "name": "X-localication",
+                        "in": "header",
+                        "description": "Ngôn ngữ",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "vi"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "examples": {
+                                "Examples": {
+                                    "summary": "Examples",
+                                    "value": {
+                                        "email": "hungtmt1102@gmail.com",
+                                        "password": "123123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/me": {
+            "get": {
+                "tags": [
+                    "Tài khoản"
+                ],
+                "summary": "Thông tin người dùng",
+                "operationId": "users/auth/me",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/logout": {
+            "get": {
+                "tags": [
+                    "Tài khoản"
+                ],
+                "summary": "Đăng xuất",
+                "operationId": "users/logout/user",
+                "parameters": [
+                    {
+                        "name": "language",
+                        "in": "header",
+                        "description": "Ngôn ngữ",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "vi"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/change-password": {
+            "post": {
+                "tags": [
+                    "Tài khoản"
+                ],
+                "summary": "Đổi mật khẩu",
+                "operationId": "users/change-password",
+                "parameters": [
+                    {
+                        "name": "language",
+                        "in": "header",
+                        "description": "Ngôn ngữ",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "vi"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "old_password": {
+                                        "type": "string"
+                                    },
+                                    "new_password": {
+                                        "type": "string"
+                                    },
+                                    "confirm_password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "examples": {
+                                "Examples": {
+                                    "summary": "Examples",
+                                    "value": {
+                                        "old_password": "123123",
+                                        "new_password": "123456",
+                                        "confirm_password": "123456",
+                                        "code_verify": "123456"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/send-verify-code": {
+            "post": {
+                "tags": [
+                    "Tài khoản"
+                ],
+                "summary": "Gửi mã xác nhận để reset mật khẩu",
+                "operationId": "c4cebe15c3c2fea374c9ff99a94c4c6c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mã xác nhận đã được gửi"
+                    },
+                    "400": {
+                        "description": "Lỗi validation"
+                    }
+                }
+            }
+        },
+        "/api/app/books": {
+            "get": {
+                "tags": [
+                    "APP"
+                ],
+                "summary": "Danh sách Books ",
+                "operationId": "listBooks",
+                "parameters": [
+                    {
+                        "name": "X-localication",
+                        "in": "header",
+                        "description": "Ngôn ngữ hiển thị",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "vi"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lấy danh sách sách thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/app/collection/{slug}": {
+            "get": {
+                "tags": [
+                    "APP"
+                ],
+                "summary": "Lấy danh sách Books theo category slug",
+                "operationId": "listBooksByCategorySlug",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug của danh mục",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "van-hoc"
+                        }
+                    },
+                    {
+                        "name": "X-localication",
+                        "in": "header",
+                        "description": "Ngôn ngữ hiển thị",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "vi"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lấy danh sách sách thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/cms/books/store": {
+            "post": {
+                "tags": [
+                    "CMS Books"
+                ],
+                "summary": "Thêm book",
+                "operationId": "books/store",
+                "parameters": [
+                    {
+                        "name": "X-localication",
+                        "in": "header",
+                        "description": "Ngôn ngữ",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "vi"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dữ liệu sách cần thêm",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Tên book"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Mô tả"
+                                    },
+                                    "author_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "draft"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 99.99
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "publisher_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "published_at": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2002-09-29"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/app/books/{slug}": {
+            "get": {
+                "tags": [
+                    "APP"
+                ],
+                "summary": "Chi tiết thông tin của Book",
+                "operationId": "bookDetail",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug của book",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "van-hoc"
+                        }
+                    },
+                    {
+                        "name": "X-localication",
+                        "in": "header",
+                        "description": "Ngôn ngữ hiển thị",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "vi"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lấy danh sách sách thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/cms/books/update/{id}": {
+            "put": {
+                "tags": [
+                    "CMS Books"
+                ],
+                "summary": "Sửa book",
+                "operationId": "books/update",
+                "parameters": [
+                    {
+                        "name": "X-localication",
+                        "in": "header",
+                        "description": "Ngôn ngữ",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "vi"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id của book",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "example": "1"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dữ liệu",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Tên book"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Mô tả"
+                                    },
+                                    "author_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "draft"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 99.99
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "publisher_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "published_at": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2002-09-29"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/app/categories": {
+            "get": {
+                "tags": [
+                    "APP"
+                ],
+                "summary": "Lấy danh sách danh mục",
+                "operationId": "37272f577bdcbdcf3629c3d2d2fdde9d",
+                "responses": {
+                    "200": {
+                        "description": "Danh sách danh mục"
+                    }
+                }
+            }
+        },
+        "/api/app/categories/{slug}": {
+            "get": {
+                "tags": [
+                    "APP"
+                ],
+                "summary": "Lấy chi tiết danh mục cha kèm danh mục con",
+                "operationId": "detailCategory",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug của danh mục",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "van-hoc"
+                        }
+                    },
+                    {
+                        "name": "X-localication",
+                        "in": "header",
+                        "description": "Ngôn ngữ hiển thị",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "vi"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lấy danh sách sách thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Lấy danh sách người dùng",
+                "operationId": "c457726701591d1183b53aa71fc13441",
+                "responses": {
+                    "200": {
+                        "description": "Danh sách người dùng"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Users"
+        },
+        {
+            "name": "Tài khoản",
+            "description": "Tài khoản"
+        },
+        {
+            "name": "APP",
+            "description": "APP"
+        },
+        {
+            "name": "CMS Books",
+            "description": "CMS Books"
+        }
+    ]
+}

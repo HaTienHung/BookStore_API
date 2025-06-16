@@ -16,10 +16,10 @@ class AuthorSeeder extends Seeder
     {
         //
         Author::create([
-            'name' => 'Dale Carnegie',
+            'name' => 'Joe Vitale',
             'bio' => '',
-            'birth_date' => '1888-11-24',
-            'slug' => Str::slug('Dale Carnegie'),
+            'birth_date' => '1953-12-29',
+            'slug' => Str::slug('Joe Vitale'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);

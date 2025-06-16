@@ -8,6 +8,7 @@ use App\Models\Role;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class RoleMiddleware extends Controller
 {
@@ -18,7 +19,7 @@ class RoleMiddleware extends Controller
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle($request, Closure $next, $role, $permission = null)
+    public function handle($request, Closure $next, $roles, $permission = null)
     {
         $user = Auth::user();
 
@@ -28,12 +29,16 @@ class RoleMiddleware extends Controller
 
         // Nếu đã load quan hệ role trong user, thì tránh gọi lại query
         // Hoặc ít nhất nên dùng firstOrFail để rõ ràng hơn
+        $roleArray = explode('|', $roles);
+
         $roleName = $user->role?->name;
 
-        if ($roleName !== $role) {
-            return response()->json(['message' => 'Unauthorized'], Constant::FORBIDDEN_CODE);
+        // Log::debug('Role name:', ['role' => $roleName]);
+
+        if (in_array($roleName, $roleArray)) {
+            return $next($request);
         }
 
-        return $next($request);
+        return response()->json(['message' => 'Unauthorized'], Constant::FORBIDDEN_CODE);
     }
 }

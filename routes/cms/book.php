@@ -1,21 +1,22 @@
 <?php
 
 use App\Enums\RoleType;
-use App\Http\Controllers\BookController;
+use App\Http\Controllers\CMS\BookControllerV2;
 use Illuminate\Support\Facades\Route;
 
 //Auth 
 Route::prefix('cms')->group(function () {
-  // Login không cần auth
-  Route::get('/collection/{slug}', [BookController::class, 'listBooksByCategorySlug'])->name('listBooksByCategorySlug');
-  Route::get('/books/{slug}', [BookController::class, 'show'])->name('show');
-
-
   // Các route cần auth
-  Route::controller(BookController::class)
-    ->middleware(['auth:sanctum', 'role:admin'])
+  Route::controller(BookControllerV2::class)
+    ->middleware(['auth:sanctum', 'role:admin|publisher'])
     ->group(function () {
-      Route::post('/books/store',  'store')->name('store');
-      Route::put('/books/update/{id}',  'update')->name('update');
+      Route::get('/books/trash',  'getTrashed');       // <== đặt trước
+      Route::post('/books/recovery',  'recovery');       // <== đặt trước
+      Route::delete('books/soft-delete',  'softDelete');
+      Route::get('/books',        'index');
+      Route::post('/books/store', 'store');
+      Route::put('/books/update/{id}',  'update');
+      // Route::get('/collection/{id}',    'listBooksByCategoryId'); // Dont do that !!!!
+      Route::get('/books/{id}',         'show');             // <== đặt sau cùng
     });
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\RoleType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BookRequest extends FormRequest
@@ -31,10 +32,14 @@ class BookRequest extends FormRequest
                     'status' => 'required|in:draft,published,archived',
                     'author_id' => 'required|integer|exists:authors,id',
                     'category_id' => 'required|integer|exists:categories,id',
-                    'publisher_id' => 'required|integer|exists:publishers,id',
                     'price' => 'required|numeric|min:0',
                     'published_at' => 'nullable|date_format:Y-m-d',
                 ];
+                if ($this->user()->role->name === RoleType::ADMIN->value) {
+                    $rule['publisher_id'] = 'required|exists:publishers,id';
+                } else {
+                    $rule['publisher_id'] = 'prohibited';
+                }
                 break;
             case "update":
                 $rule = [
@@ -43,9 +48,25 @@ class BookRequest extends FormRequest
                     'status' => 'nullable|in:draft,published,archived',
                     'author_id' => 'nullable|integer|exists:authors,id',
                     'category_id' => 'nullable|integer|exists:categories,id',
-                    'publisher_id' => 'nullable|integer|exists:publishers,id',
                     'price' => 'nullable|numeric|min:0',
                     'published_at' => 'nullable|date_format:Y-m-d',
+                ];
+                if ($this->user()->role->name === RoleType::ADMIN->value) {
+                    $rule['publisher_id'] = 'nullable|exists:publishers,id';
+                } else {
+                    $rule['publisher_id'] = 'prohibited';
+                }
+                break;
+            case "soft-delete":
+                $rule = [
+                    'ids' => 'required|array',
+                    'ids.*' => 'required|integer|exists:books,id',
+                ];
+                break;
+            case "recovery":
+                $rule = [
+                    'ids' => 'required|array',
+                    'ids.*' => 'required|integer|exists:books,id',
                 ];
                 break;
             default:
@@ -58,6 +79,12 @@ class BookRequest extends FormRequest
     public function messages(): array
     {
         return [
+            //Id
+            'ids.required'      => 'Vui lòng cung cấp danh sách ID| The ids field is required.',
+            'ids.array'         => 'Danh sách ID không hợp lệ.| The ids must be an array.',
+            'ids.*.required'    => 'ID không được để trống |  Each id is required.',
+            'ids.*.integer'     => 'ID phải là số nguyên.| Each id must be an integer.',
+            'ids.*.exists'      => 'ID không tồn tại trong hệ thống| Each id must exist in books table.',
             // Title
             'title.required' => 'Tiêu đề không được bỏ trống | Title is required.',
             'title.string' => 'Tiêu đề phải là chuỗi | Title must be a string.',

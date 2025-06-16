@@ -1,22 +1,21 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\APP\AuthController;
 use Illuminate\Support\Facades\Route;
 
 
 //Auth 
 Route::prefix('auth')->group(function () {
-  // Login không cần auth
-  Route::post('/login', [AuthController::class, 'login'])->name('login');
-  Route::post('/send-verify-code', [AuthController::class, 'sendVerifyCode'])->name('send-verify-code');
+  // Public Route
+  Route::post('/login', [AuthController::class, 'login']);
+  Route::post('/send-verify-code', [AuthController::class, 'sendVerifyCode']);
 
-  // Các route cần auth
+  // Auth Route
   Route::controller(AuthController::class)
-    ->middleware('auth:sanctum')
+    ->middleware(['auth:sanctum', 'role:user'])
     ->group(function () {
-      Route::get('/me', 'me')->name('me');
-      Route::get('/logout', 'logout')->name('logout');
-      Route::post('/change-password', 'changePassword')->name('change-password');
+      Route::get('/me', 'me');
+      Route::get('/logout', 'logout');
+      Route::post('/change-password', 'changePassword');
     });
 });

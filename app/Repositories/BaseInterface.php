@@ -30,9 +30,15 @@ interface BaseInterface
 
   public function findById($id, array $with = []);
 
-  public function getModel();
-
   public function getFirstByWithTrash(array $condition = [], array $select = []);
 
+  public function getAllByWithTrash(array $condition = [], array $select = []);
+
   public function findAllById(string $field, array $id, array $columns = ["*"]);
+
+  public function deleteByIds(string $field, array $ids);
+
+  public function restoreByIds(string $field, array $ids);
+
+  public function findAllBy(array $condition = [], array $with = []);
 }

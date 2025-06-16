@@ -2,60 +2,19 @@
 
 namespace App\Repositories;
 
-use App\Enums\Constant;
+
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 
 abstract class BaseRepository implements BaseInterface
 {
-  protected Model $model;
-  protected Model $originalModel;
-  protected ?object $user = null;
-  protected bool $isLogin = false;
-  protected int $perPage;
-  protected int $page;
-  protected array $requestData;
 
   public function __construct(
-    Model $model
+    protected Model $model,
   ) {
     $this->model = $model;
-    $this->originalModel = $model;
-    // $this->makeModel();
-    // $this->initiate();
   }
-
-  //   private function initiate(): void
-  //   {
-  //     $this->user = auth()->user();
-  //     $this->isLogin = auth()->check();
-  // 
-  //     $this->perPage = $this->request->integer('perpage', Constant::PER_PAGE);
-  //     $this->page = $this->request->integer('page', 1);
-  //     $this->requestData = $this->request->all();
-  //   }
-
-  // public function makeModel(): static
-  // {
-  //   $this->model = app($this->model())->newQuery();
-  //   return $this;
-  // }
-
-  // Keep resetModel for backward compatibility or specific cases
-  public function resetModel(): static
-  {
-    $this->model = $this->originalModel->newQuery();
-    return $this;
-  }
-
-  public function getModel(): Model
-  {
-    return $this->model;
-  }
-
-  // Abstract method - implement in child classes
-  // abstract protected function model(): string;
 
   public function all(array $columns = ['*']): \Illuminate\Database\Eloquent\Collection
   {
@@ -92,7 +51,7 @@ abstract class BaseRepository implements BaseInterface
     return $this->model->destroy($id);
   }
 
-  public function find(mixed $id, array $columns = ["*"]): ?Model
+  public function find(mixed $id, array $columns = ["*"])
   {
     return $this->model->find($id, $columns);
   }
@@ -102,6 +61,15 @@ abstract class BaseRepository implements BaseInterface
     return $this->model->whereIntegerInRaw($field, $id)->get($columns);
   }
 
+  public function findAllBy(array $condition = [], array $with = [])
+  {
+    $query = $this->model->newQuery();
+    $this->applyConditions($condition, $query);
+    $query->with($with);
+    $data = $query->get();
+    return $data;
+  }
+
   public function findBy(string $field, mixed $value, array $columns = ['*']): ?Model
   {
     return $this->model->where($field, $value)->first($columns);
@@ -109,7 +77,7 @@ abstract class BaseRepository implements BaseInterface
 
   public function findById(mixed $id, array $with = []): ?Model
   {
-    $query = $this->originalModel->newQuery();
+    $query = $this->model->newQuery();
 
     if (!empty($with)) {
       $query->with($with);
@@ -120,7 +88,7 @@ abstract class BaseRepository implements BaseInterface
 
   public function getFirstBy(array $condition = [], array $select = ['*'], array $with = []): ?Model
   {
-    $query = $this->originalModel->newQuery();
+    $query = $this->model->newQuery();
 
     if (!empty($with)) {
       $query->with($with);
@@ -157,8 +125,8 @@ abstract class BaseRepository implements BaseInterface
   {
     if (is_array($data)) {
       $item = empty($condition) ?
-        new $this->originalModel() :
-        $this->getFirstBy($condition) ?? new $this->originalModel();
+        new $this->model() :
+        $this->getFirstBy($condition) ?? new $this->model();
 
       $item->fill($data);
     } elseif ($data instanceof Model) {
@@ -170,18 +138,9 @@ abstract class BaseRepository implements BaseInterface
     return $item->save() ? $item : false;
   }
 
-  //   public function make(array $with = []): Model
-  //   {
-  //     if (!empty($with)) {
-  //       $this->model = $this->model->with($with);
-  //     }
-  // 
-  //     return $this->model;
-  //   }
-
   public function deleteBy(array $condition = []): bool
   {
-    $query = $this->originalModel->newQuery();
+    $query = $this->model->newQuery();
     $this->applyConditions($condition, $query);
     $data = $query->get();
 
@@ -196,14 +155,36 @@ abstract class BaseRepository implements BaseInterface
     return true;
   }
 
+  public function deleteByIds(string $field, array $ids)
+  {
+    $query = $this->model->newQuery();
+    return $query->whereIntegerInRaw($field, $ids)->delete();
+  }
+
+  public function restoreByIds(string $field, array $ids)
+  {
+    $query = $this->model->newQuery();
+    return $query->onlyTrashed()->whereIntegerInRaw($field, $ids)->restore();
+  }
+
   public function getFirstByWithTrash(array $condition = [], array $select = []): ?Model
   {
-    $query = $this->originalModel->newQuery();
+    $query = $this->model->newQuery();
     $this->applyConditions($condition, $query);
     $query->withTrashed();
 
     return empty($select) ?
       $query->first() :
       $query->select($select)->first();
+  }
+  public function getAllByWithTrash(array $condition = [], array $select = ['*'])
+  {
+    $query = $this->model->newQuery();
+
+    if (!empty($condition)) {
+      $query->where($condition);
+    }
+
+    return $query->onlyTrashed()->select($select)->get();
   }
 }

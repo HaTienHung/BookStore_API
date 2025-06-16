@@ -3,30 +3,57 @@
 namespace App\Repositories\Book;
 
 use App\Models\Book;
-use App\Models\Category;
 use App\Repositories\BaseRepository;
 use App\Repositories\Category\CategoryInterface;
-use Illuminate\Support\Facades\Log;
+
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 
 class BookRepository extends BaseRepository implements BookInterface
 {
-    protected $categoryRepository;
-    public function __construct(Book $book, CategoryInterface $categoryRepository)
-    {
+    public function __construct(
+        protected Book $book,
+        protected CategoryInterface $categoryRepository
+    ) {
         parent::__construct($book);
         $this->categoryRepository = $categoryRepository;
     }
+    // public function model()
+    // {
+    //     return Book::class;
+    // }
+    //     private function getCategoryWithChildrenIds($categoryId): array
+    //     {
+    //         $category = $this->categoryRepository->findByIdWithChildren($categoryId);
+    // 
+    //         if (!$category) {
+    //             throw new ModelNotFoundException("Category not found");
+    //         }
+    // 
+    //         $categoryIds = $category->children->pluck('id')->toArray();
+    //         $categoryIds[] = $category->id;
+    // 
+    //         return $categoryIds;
+    //     }
+    private function getBooksInCategoryTree($categoryId)
+    {
+        return $this->model
+            ->whereHas('category', function ($q) use ($categoryId) {
+                $q->where('id', $categoryId)
+                    ->orWhere('parent_id', $categoryId);
+            })
+            ->get();
+    }
     public function getBooksByCategorySlug(string $slug)
     {
-        Log::debug($slug);
-        // Eager load children luôn khi tìm category
+        // Lấy category với children trong một query
         $category = $this->categoryRepository->findBySlugWithChildren($slug);
-        // Log::debug($category);
 
-        // Lấy ID của chính nó + các con
-        $categoryIds = $category->children->pluck('id')->toArray();
-        $categoryIds[] = $category->id;
+        if (!$category) {
+            throw new ModelNotFoundException("Category not found");
+        }
 
-        return $this->findAllById('category_id', $categoryIds);
+        // Join trực tiếp thay vì whereIn
+        return $this->getBooksInCategoryTree($category->id);
     }
 }

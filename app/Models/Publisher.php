@@ -25,4 +25,12 @@ class Publisher extends Model
         'address',
         'slug',
     ];
+    public function books()
+    {
+        return $this->hasMany(Book::class, 'publisher_id', 'id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

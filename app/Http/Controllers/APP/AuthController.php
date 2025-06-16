@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\APP;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -51,7 +51,7 @@ class AuthController extends Controller
      *     path="/api/auth/login",
      *     tags={"Tài khoản"},
      *     summary="Đăng nhập User",
-     *     operationId="users/login/user",
+     *     operationId="user_login",
      *     @OA\Parameter(
      *          in="header",
      *          name="X-localication",
@@ -89,8 +89,9 @@ class AuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         try {
+            // Log::debug('test', [User::$publisher, User::$user]);
             $user = $this->user->ofEmail($request->email)
-                ->OfRole(User::$user)
+                ->ofRole([User::$user])
                 ->first();
 
             if (!$user) {
@@ -162,7 +163,7 @@ class AuthController extends Controller
      *     tags={"Tài khoản"},
      *     security={{"bearerAuth":{}}},
      *     summary="Thông tin người dùng",
-     *     operationId="users/auth/me",
+     *     operationId="user_me",
      *     @OA\Response(
      *         response=200,
      *         description="Success",
@@ -189,7 +190,7 @@ class AuthController extends Controller
      *     tags={"Tài khoản"},
      *     summary="Đăng xuất",
      *     security={{"bearerAuth":{}}},
-     *     operationId="users/logout/user",
+     *     operationId="user_logout",
      *     @OA\Parameter(
      *          in="header",
      *          name="language",
@@ -248,7 +249,7 @@ class AuthController extends Controller
      *     tags={"Tài khoản"},
      *     summary="Đổi mật khẩu",
      *     security={{"bearerAuth":{}}},
-     *     operationId="users/change-password",
+     *     operationId="user_change-password",
      *     @OA\Parameter(
      *          in="header",
      *          name="language",

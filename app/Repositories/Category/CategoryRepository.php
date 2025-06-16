@@ -15,4 +15,8 @@ class CategoryRepository extends BaseRepository implements CategoryInterface
     {
         return $this->model->with('children')->where('slug', $slug)->firstOrFail();
     }
+    public function findByIdWithChildren(string $id)
+    {
+        return $this->model->with('children')->where('id', $id)->firstOrFail();
+    }
 }

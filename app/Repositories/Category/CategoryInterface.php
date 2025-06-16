@@ -7,4 +7,5 @@ use App\Repositories\BaseInterface;
 interface CategoryInterface extends BaseInterface
 {
   public function findBySlugWithChildren(string $slug);
+  public function findByIdWithChildren(string $id);
 }

@@ -16,11 +16,12 @@ class PublisherSeeder extends Seeder
     {
         //
         Publisher::create([
-            'name' => 'NXB Kim Đồng',
-            'email' => 'nxbkimdong@example.com',
+            'name' => 'NXB Giáo Dục Việt Nam',
+            'email' => 'nxbgdvn@example.com',
             'address' => 'Hà Nội',
-            'phone_number' => '0387768888',
-            'slug' => Str::slug('NXB Kim Đồng'),
+            'phone_number' => '0387769999',
+            'slug' => Str::slug('NXB Giáo Dục Việt Nam'),
+            'user_id' => 17,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

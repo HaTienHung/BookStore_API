@@ -13,7 +13,7 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
-
+    static $publisher = 3;
     static $admin = 2;
     static $user = 1;
 
@@ -74,6 +74,10 @@ class User extends Authenticatable
     //     }
     public function scopeOfRole($query, $type)
     {
+        if (is_array($type)) {
+            return $query->whereIn('role_id', $type);
+        }
+
         return $query->where('role_id', $type);
     }
     public function scopeOfEmail($query, $type)
@@ -83,5 +87,9 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+    public function publisher()
+    {
+        return $this->hasOne(Publisher::class, 'user_id', 'id');
     }
 }
